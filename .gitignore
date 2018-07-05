@@ -1,5 +1,7 @@
 ### IDEs ###
 .idea
+/nbproject/
+
 ###> symfony/framework-bundle ###
 /.env
 /public/bundles/
