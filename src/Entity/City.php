@@ -9,6 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class City
 {
+
+    const
+        CODE_GDANSK = 'gdansk',
+        CODE_KRAKOW = 'krakow'
+    ;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

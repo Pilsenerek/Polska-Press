@@ -13,8 +13,8 @@ class LoadCity extends Fixture
      * @var array
      */
     private $cities = [
-        ['Gdańsk', 'gdansk'],
-        ['Kraków', 'krakow'],
+        ['Gdańsk', City::CODE_GDANSK],
+        ['Kraków', City::CODE_KRAKOW],
     ];
     
     public function load(ObjectManager $manager)
