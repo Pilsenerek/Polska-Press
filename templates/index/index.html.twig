@@ -72,8 +72,8 @@
     </div>
 
     {% if districts.count == 0 %}
-        <div>
-            <p class="text-danger">Lack of data! Use "php bin/console import:districts" or add few manually.</p>
+        <div class="alert alert-info" role="alert">
+            Nothing to show! Please change criteria or ensure, that database is not empty.
         </div>
     {% endif %}    
 
