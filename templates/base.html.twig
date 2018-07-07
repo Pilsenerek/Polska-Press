@@ -3,10 +3,25 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
+        
+        <link rel="stylesheet" href="/vendor/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/vendor/@fortawesome/fontawesome-free/css/all.css" />
+        
+        <script type="text/javascript" src="/vendor/jquery/dist/jquery.min.js"></script>
+        <script type="text/javascript" src="/vendor/popper.js/dist/umd/popper.min.js"></script>
+        <script type="text/javascript" src="/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+        
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <div class="jumbotron text-center">
+            <h1>Districts manager</h1>
+        </div>
+
+        <div class="container-fluid">
+           {% block body %}{% endblock %}
+        </div>    
+        
         {% block javascripts %}{% endblock %}
     </body>
 </html>

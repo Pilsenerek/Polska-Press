@@ -3,18 +3,76 @@
 {% block title %}Hello {{ controller_name }}!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div>
+        <div class="float-left pb-3">
+            <a class="btn btn-success" href=""><i class="fa fa-plus"></i> Add new district</a>
+        </div>
+        <div class="float-right pb-3">
+            <a class="btn btn-outline-secondary ml-2" href="/">Reset</a>
+        </div>    
+        <div class="float-right pb-3">
+            {{ form(searchForm) }}
+        </div>
+    </div>
+    
+    <table class="table table-striped table-hover table-sorted table-bordered">
+        <thead class="active">
+            <tr>
+                <th class="text-center align-middle">Id
+                    <a class="mb-1 btn btn-outline-secondary{% if sort.key == 'id' %} active{%endif %}" href="{{sort.urls.id}}">
+                        <i class="fa fa-sort-numeric{% if sort.order == 'DESC' %}-up{% else %}-down{% endif %}"></i>
+                    </a>
+                </th>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+                <th class="align-middle">Name
+                    <a class="mb-1 btn btn-outline-secondary{% if sort.key == 'name' %} active{%endif %}" href="{{sort.urls.name}}">
+                        <i class="fa fa-sort-alpha{% if sort.order == 'DESC' %}-up{% else %}-down{% endif %}"></i>
+                    </a>                      
+                </th>
+                <th class="text-center align-middle">City
+                    <a class="mb-1 btn btn-outline-secondary{% if sort.key == 'city' %} active{%endif %}" href="{{sort.urls.city}}">
+                        <i class="fa fa-sort-alpha{% if sort.order == 'DESC' %}-up{% else %}-down{% endif %}"></i>
+                    </a>                      
+                </th>
+                <th class="text-center align-middle">Population
+                    <a class="mb-1 btn btn-outline-secondary{% if sort.key == 'population' %} active{%endif %}" href="{{sort.urls.population}}">
+                        <i class="fa fa-sort-numeric{% if sort.order == 'DESC' %}-up{% else %}-down{% endif %}"></i>
+                    </a>                      
+                </th>
+                <th class="text-center align-middle">Area
+                    <a class="mb-1 btn btn-outline-secondary{% if sort.key == 'area' %} active{%endif %}" href="{{sort.urls.area}}">
+                        <i class="fa fa-sort-numeric{% if sort.order == 'DESC' %}-up{% else %}-down{% endif %}"></i>
+                    </a>                      
+                </th>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'src/Controller/IndexController.php'|file_link(0) }}">src/Controller/IndexController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'templates/index/index.html.twig'|file_link(0) }}">templates/index/index.html.twig</a></code></li>
-    </ul>
-</div>
+                <th class="text-center align-middle">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for district in districts %}
+                <tr>
+                    <td class="text-center">{{district.id}}</td>
+                    <td>{{district.name}}</td>
+                    <td class="text-center">{{district.city.name}}</td>
+                    <td class="text-right">{{district.population}}</td>
+                    <td class="text-right">{{district.area}}</td>
+                    <td class="text-center text-nowrap">
+                        <a class="btn btn-sm btn-primary" href=""><i class="fa fa-edit"></i></a>
+                        <a class="btn btn-sm btn-danger" href=""><i class="fa fa-trash"></i></a>
+                        {#                        <a href="{{ path('base_user_edit', {id: user.id, returnUrl: app.request.uri}) }}" class="btn btn-sm btn-default" title="Ëdit"><i class="glyphicon glyphicon-edit"></i></a>#}
+                        {#                        <a href="{{ path('base_user_delete', {id: user.id, returnUrl: app.request.uri}) }}" data-toggle="modal" data-target="#deleteModalConfirm" class="btn btn-sm btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i></a>#}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {{ knp_pagination_render(districts) }}
+    
+    {% if districts.count == 0 %}
+        <div>
+            <p class="text-danger">Lack of data! Use "php bin/console import:districts" or add few manually.</p>
+        </div>
+    {% endif %}    
+    
 {% endblock %}

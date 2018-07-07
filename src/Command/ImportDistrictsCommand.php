@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Repository\DistrictRepository;
 use App\Service\DistrictImport;
+use App\Service\DistrictImportService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,18 +16,18 @@ class ImportDistrictsCommand extends Command
 
 
     /**
-     * @var DistrictImport
+     * @var DistrictImportService
      */
-    private $districtImport;
+    private $districtImportService;
 
     /**
      * @var DistrictRepository
      */
     private $districtRepository;
 
-    public function __construct(DistrictImport $districtImport, DistrictRepository $districtRepository)
+    public function __construct(DistrictImportService $districtImportService, DistrictRepository $districtRepository)
     {
-        $this->districtImport = $districtImport;
+        $this->districtImportService = $districtImportService;
         $this->districtRepository = $districtRepository;
 
         parent::__construct();
@@ -52,7 +53,7 @@ class ImportDistrictsCommand extends Command
             $ifContinue = $io->confirm('It seems that your districts table is not empty, new import overwrites old. Do you still want to continue?', false);
         }
         if ($ifContinue) {
-            $this->districtImport->run($io);
+            $this->districtImportService->run($io);
         } else {
             $io->warning('Import has been interrupted!');
 

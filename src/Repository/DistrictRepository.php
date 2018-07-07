@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\District;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -19,32 +20,16 @@ class DistrictRepository extends ServiceEntityRepository
         parent::__construct($registry, District::class);
     }
 
-//    /**
-//     * @return District[] Returns an array of District objects
-//     */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('d')
-            ->andWhere('d.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('d.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+    public function findAllQb(string $column = null, string $search = null) : QueryBuilder {
+        $qb = $this->createQueryBuilder('a');
+        $qb->select('a', 'b');
+        $qb->join('a.city', 'b');
+        if(!empty($column) && !empty($search)){
+            $qb->where($qb->expr()->like($column, ":search"));
+            $qb->setParameter('search', "%" . $search . "%");
+        }
+        
+        return $qb;
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?District
-    {
-        return $this->createQueryBuilder('d')
-            ->andWhere('d.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
