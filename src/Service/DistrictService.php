@@ -73,7 +73,6 @@ class DistrictService {
         $this->gridService->setSortKeepParams(['col', 'search']);
 
         return [
-            'controller_name' => 'IndexController',
             'searchForm' => $searchForm->createView(),
             'districts' => $this->gridService->getPaginate(),
             'sort' => $this->gridService->getSort(),
