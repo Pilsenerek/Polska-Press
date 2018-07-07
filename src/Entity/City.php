@@ -32,30 +32,45 @@ class City
      */
     private $code;
 
-    public function getId()
-    {
+    /**
+     * @return int
+     */
+    public function getId() : ?int {
+        
         return $this->id;
     }
 
-    public function getName(): string
-    {
+    /**
+     * @return string
+     */
+    public function getName(): ?string {
+        
         return $this->name;
     }
 
-    public function setName(string $name): self
-    {
+    /**
+     * @param string $name
+     * @return City
+     */
+    public function setName(string $name): self {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getCode(): string
-    {
+    /**
+     * @return string
+     */
+    public function getCode(): ?string {
+        
         return $this->code;
     }
 
-    public function setCode(string $code): self
-    {
+    /**
+     * @param string $name
+     * @return City
+     */
+    public function setCode(string $code): self {
         $this->code = $code;
 
         return $this;

@@ -50,44 +50,79 @@ class District {
      */
     private $city;
 
-    public function getId() {
+    /**
+     * @return int
+     */
+    public function getId(): ?int {
+        
         return $this->id;
     }
 
-    public function getName(): string {
+    /**
+     * @return string
+     */
+    public function getName(): ?string {
+        
         return $this->name;
     }
 
+    /**
+     * @param string $name
+     * @return District
+     */
     public function setName(string $name): self {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getPopulation(): int {
+    /**
+     * @return int
+     */
+    public function getPopulation(): ?int {
         return $this->population;
     }
 
+    /**
+     * @param int $population
+     * @return District
+     */
     public function setPopulation(int $population): self {
         $this->population = $population;
 
         return $this;
     }
 
-    public function getArea(): float {
+    /**
+     * @return float
+     */
+    public function getArea(): ?float {
+        
         return $this->area;
     }
 
+    /**
+     * @param float $area
+     * @return District
+     */
     public function setArea(float $area): self {
         $this->area = $area;
 
         return $this;
     }
 
-    public function getCity(): City {
+    /**
+     * @return City
+     */
+    public function getCity(): ?City {
+        
         return $this->city;
     }
 
+    /**
+     * @param City $city
+     * @return District
+     */
     public function setCity(City $city): self {
         $this->city = $city;
 

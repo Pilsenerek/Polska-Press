@@ -2,7 +2,7 @@
 REM Your DB will be re-installed!
 @ECHO OFF
 PAUSE 
-php bin/console doctrine:database:drop --force
+php bin/console doctrine:database:drop --if-exists --no-interaction --force
 php bin/console doctrine:database:create
 php bin/console doctrine:schema:update --force
 php bin/console doctrine:fixtures:load --no-interaction
