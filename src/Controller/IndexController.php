@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\District;
+use App\Form\DistrictForm;
 use App\Form\SearchForm;
 use App\Repository\DistrictRepository;
 use App\Service\Grid;
@@ -10,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class IndexController extends Controller
 {
@@ -34,7 +37,7 @@ class IndexController extends Controller
      * @Route("/")
      * @Template
      */
-    public function index(Request $request)
+    public function index(Request $request) : array
     {
         $searchForm = $this->createForm(SearchForm::class);
         $searchForm->handleRequest($request);
@@ -64,5 +67,62 @@ class IndexController extends Controller
             'districts' => $this->gridService->getPaginate(),
             'sort' => $this->gridService->getSort(),
         ];
+    }
+    
+     /**
+     * @Route("/add")
+     * @Template
+     */
+    public function add(Request $request)
+    {
+        $district = new District();
+        $form = $this->createForm(DistrictForm::class, $district);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $this->getDoctrine()->getManager()->persist($district);
+            $this->getDoctrine()->getManager()->flush();
+            $this->addFlash('success', 'District has been added');
+            
+            return $this->redirect($request->get('returnUrl'));
+        }    
+        
+        return ['districtForm' => $form->createView()];
+    }
+    
+     /**
+     * @Route("/{districtId}/edit", requirements={"districtId": "\d+"})
+     * @ParamConverter("district", options={"id" = "districtId"})
+     * @Template
+     */
+    public function edit(Request $request, District $district)
+    {
+        $form = $this->createForm(DistrictForm::class, $district);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $this->getDoctrine()->getManager()->persist($district);
+            $this->getDoctrine()->getManager()->flush();
+            $this->addFlash('success', 'District has been saved');
+            
+            return $this->redirect($request->get('returnUrl'));
+        }    
+        
+        return [
+            'district' => $district,
+            'districtForm' => $form->createView(),
+        ];
+    }
+    
+     /**
+     * @Route("/{districtId}/delete", requirements={"districtId": "\d+"})
+     * @ParamConverter("district", options={"id" = "districtId"})
+     */
+    public function delete(Request $request, District $district)
+    {
+        $name = $district->getName();
+        $this->getDoctrine()->getManager()->remove($district);
+        $this->getDoctrine()->getManager()->flush();
+        $this->addFlash('success', 'District '.$name.' has been removed');
+            
+        return $this->redirect($request->get('returnUrl'));
     }
 }

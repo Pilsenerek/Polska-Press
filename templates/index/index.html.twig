@@ -5,7 +5,7 @@
 {% block body %}
     <div>
         <div class="float-left pb-3">
-            <a class="btn btn-success" href=""><i class="fa fa-plus"></i> Add new district</a>
+            <a class="btn btn-success" href="{{ path('app_index_add', {returnUrl: app.request.uri} ) }}"><i class="fa fa-plus"></i> Add new district</a>
         </div>
         <div class="float-right pb-3">
             <a class="btn btn-outline-secondary ml-2" href="/">Reset</a>
@@ -19,28 +19,28 @@
         <thead class="active">
             <tr>
                 <th class="text-center align-middle">Id
-                    <a class="mb-1 btn btn-outline-secondary{% if sort.key == 'id' %} active{%endif %}" href="{{sort.urls.id}}">
+                    <a class="btn btn-outline-secondary{% if sort.key == 'id' %} active{%endif %}" href="{{sort.urls.id}}">
                         <i class="fa fa-sort-numeric{% if sort.order == 'DESC' %}-up{% else %}-down{% endif %}"></i>
                     </a>
                 </th>
 
                 <th class="align-middle">Name
-                    <a class="mb-1 btn btn-outline-secondary{% if sort.key == 'name' %} active{%endif %}" href="{{sort.urls.name}}">
+                    <a class="btn btn-outline-secondary{% if sort.key == 'name' %} active{%endif %}" href="{{sort.urls.name}}">
                         <i class="fa fa-sort-alpha{% if sort.order == 'DESC' %}-up{% else %}-down{% endif %}"></i>
                     </a>                      
                 </th>
                 <th class="text-center align-middle">City
-                    <a class="mb-1 btn btn-outline-secondary{% if sort.key == 'city' %} active{%endif %}" href="{{sort.urls.city}}">
+                    <a class="btn btn-outline-secondary{% if sort.key == 'city' %} active{%endif %}" href="{{sort.urls.city}}">
                         <i class="fa fa-sort-alpha{% if sort.order == 'DESC' %}-up{% else %}-down{% endif %}"></i>
                     </a>                      
                 </th>
                 <th class="text-center align-middle">Population
-                    <a class="mb-1 btn btn-outline-secondary{% if sort.key == 'population' %} active{%endif %}" href="{{sort.urls.population}}">
+                    <a class="btn btn-outline-secondary{% if sort.key == 'population' %} active{%endif %}" href="{{sort.urls.population}}">
                         <i class="fa fa-sort-numeric{% if sort.order == 'DESC' %}-up{% else %}-down{% endif %}"></i>
                     </a>                      
                 </th>
                 <th class="text-center align-middle">Area
-                    <a class="mb-1 btn btn-outline-secondary{% if sort.key == 'area' %} active{%endif %}" href="{{sort.urls.area}}">
+                    <a class="btn btn-outline-secondary{% if sort.key == 'area' %} active{%endif %}" href="{{sort.urls.area}}">
                         <i class="fa fa-sort-numeric{% if sort.order == 'DESC' %}-up{% else %}-down{% endif %}"></i>
                     </a>                      
                 </th>
@@ -57,22 +57,26 @@
                     <td class="text-right">{{district.population}}</td>
                     <td class="text-right">{{district.area}}</td>
                     <td class="text-center text-nowrap">
-                        <a class="btn btn-sm btn-primary" href=""><i class="fa fa-edit"></i></a>
-                        <a class="btn btn-sm btn-danger" href=""><i class="fa fa-trash"></i></a>
-                        {#                        <a href="{{ path('base_user_edit', {id: user.id, returnUrl: app.request.uri}) }}" class="btn btn-sm btn-default" title="Ëdit"><i class="glyphicon glyphicon-edit"></i></a>#}
-                        {#                        <a href="{{ path('base_user_delete', {id: user.id, returnUrl: app.request.uri}) }}" data-toggle="modal" data-target="#deleteModalConfirm" class="btn btn-sm btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i></a>#}
+                        <a class="btn btn-sm btn-primary" href="{{ path('app_index_edit', {districtId: district.id, returnUrl: app.request.uri}) }}"><i class="fa fa-edit"></i></a>
+                        <a href="{{ path('app_index_delete', {districtId: district.id, returnUrl: app.request.uri}) }}" data-content="Do you really want to delete {{district.name}} district?" data-toggle="modal" data-target="#deleteModalConfirm" class="btn btn-sm btn-danger">
+                            <i class="fa fa-trash"></i>
+                        </a>
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    {{ knp_pagination_render(districts) }}
+    <div class="justify-content-center">
+        {{ knp_pagination_render(districts, null, {}, {align:'center'}) }}
+    </div>
     
     {% if districts.count == 0 %}
         <div>
             <p class="text-danger">Lack of data! Use "php bin/console import:districts" or add few manually.</p>
         </div>
     {% endif %}    
+    
+    {% include '/Common/deleteModalConfirm.html.twig' %}
     
 {% endblock %}

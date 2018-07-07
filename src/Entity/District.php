@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DistrictRepository")
@@ -18,16 +19,27 @@ class District
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $name;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank()
+     * @Assert\Range(
+     *      min = 100,
+     *      max = 1000000
+     * )
      */
     private $population;
 
     /**
      * @ORM\Column(type="decimal", precision=6, scale=2)
+     * @Assert\NotBlank()
+     * @Assert\Range(
+     *      min = 0.1,
+     *      max = 1000
+     * )
      */
     private $area;
 
