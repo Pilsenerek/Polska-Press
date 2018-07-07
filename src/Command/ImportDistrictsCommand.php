@@ -3,17 +3,13 @@
 namespace App\Command;
 
 use App\Repository\DistrictRepository;
-use App\Service\DistrictImport;
 use App\Service\DistrictImportService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class ImportDistrictsCommand extends Command
-{
-
+class ImportDistrictsCommand extends Command {
 
     /**
      * @var DistrictImportService
@@ -25,8 +21,11 @@ class ImportDistrictsCommand extends Command
      */
     private $districtRepository;
 
-    public function __construct(DistrictImportService $districtImportService, DistrictRepository $districtRepository)
-    {
+    /**
+     * @param DistrictImportService $districtImportService
+     * @param DistrictRepository $districtRepository
+     */
+    public function __construct(DistrictImportService $districtImportService, DistrictRepository $districtRepository) {
         $this->districtImportService = $districtImportService;
         $this->districtRepository = $districtRepository;
 
@@ -35,15 +34,16 @@ class ImportDistrictsCommand extends Command
 
     protected static $defaultName = 'import:districts';
 
-    protected function configure()
-    {
-        $this
-            ->setDescription('Import districts from outer web pages or services into app db')
-        ;
+    protected function configure() {
+        $this->setDescription('Import districts from outer web pages or services into app db');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return type
+     */
+    protected function execute(InputInterface $input, OutputInterface $output) {
         $io = new SymfonyStyle($input, $output);
 
         $districtsNumber = $this->districtRepository->count([]);
@@ -60,4 +60,5 @@ class ImportDistrictsCommand extends Command
             return;
         }
     }
+
 }

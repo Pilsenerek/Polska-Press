@@ -14,7 +14,7 @@
             {{ form(searchForm) }}
         </div>
     </div>
-    
+
     <table class="table table-striped table-hover table-sorted table-bordered">
         <thead class="active">
             <tr>
@@ -70,13 +70,13 @@
     <div class="justify-content-center">
         {{ knp_pagination_render(districts, null, {}, {align:'center'}) }}
     </div>
-    
+
     {% if districts.count == 0 %}
         <div>
             <p class="text-danger">Lack of data! Use "php bin/console import:districts" or add few manually.</p>
         </div>
     {% endif %}    
-    
+
     {% include '/Common/deleteModalConfirm.html.twig' %}
-    
+
 {% endblock %}

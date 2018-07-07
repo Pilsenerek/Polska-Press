@@ -10,31 +10,30 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class DistrictForm extends AbstractType
-{
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
+class DistrictForm extends AbstractType {
+
+    public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
-            ->add('name')
-            ->add('population')
-            ->add('area')
+                ->add('name')
+                ->add('population')
+                ->add('area')
         ;
-        
+
         $builder->add('city', EntityType::class, [
             'label' => 'City',
-            'class'=> City::class,
-            'choice_label'=> 'name',
+            'class' => City::class,
+            'choice_label' => 'name',
         ]);
-        
+
         $builder->add('submit', SubmitType::class, array(
             'label' => 'Save',
         ));
     }
 
-    public function configureOptions(OptionsResolver $resolver)
-    {
+    public function configureOptions(OptionsResolver $resolver) {
         $resolver->setDefaults([
             'data_class' => District::class,
         ]);
     }
+
 }

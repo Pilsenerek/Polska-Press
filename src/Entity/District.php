@@ -8,8 +8,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DistrictRepository")
  */
-class District
-{
+class District {
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -50,56 +50,48 @@ class District
      */
     private $city;
 
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
-    public function getName(): ?string
-    {
+    public function getName(): string {
         return $this->name;
     }
 
-    public function setName(string $name): self
-    {
+    public function setName(string $name): self {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getPopulation(): ?int
-    {
+    public function getPopulation(): int {
         return $this->population;
     }
 
-    public function setPopulation(int $population): self
-    {
+    public function setPopulation(int $population): self {
         $this->population = $population;
 
         return $this;
     }
 
-    public function getArea()
-    {
+    public function getArea(): float {
         return $this->area;
     }
 
-    public function setArea($area): self
-    {
+    public function setArea(float $area): self {
         $this->area = $area;
 
         return $this;
     }
 
-    public function getCity(): ?City
-    {
+    public function getCity(): City {
         return $this->city;
     }
 
-    public function setCity(?City $city): self
-    {
+    public function setCity(City $city): self {
         $this->city = $city;
 
         return $this;
     }
+
 }

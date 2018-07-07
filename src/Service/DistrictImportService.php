@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-
 use App\Entity\City;
 use App\Entity\District;
 use App\Repository\CityRepository;
@@ -12,8 +11,8 @@ use GuzzleHttp\Psr7\Response;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DomCrawler\Crawler;
 
-class DistrictImportService
-{
+class DistrictImportService {
+
     /**
      * @var array
      */
@@ -32,13 +31,19 @@ class DistrictImportService
      */
     private $cityRepository;
 
-    public function __construct(EntityManagerInterface $entityManager, CityRepository $cityRepository)
-    {
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param CityRepository $cityRepository
+     */
+    public function __construct(EntityManagerInterface $entityManager, CityRepository $cityRepository) {
         $this->entityManager = $entityManager;
         $this->cityRepository = $cityRepository;
     }
 
-    public function run(SymfonyStyle $io){
+    /**
+     * @param SymfonyStyle $io
+     */
+    public function run(SymfonyStyle $io) {
         $this->entityManager->beginTransaction();
         $this->entityManager->createQuery('delete from App\Entity\District')->execute();
         $io->title('Districts from Gdańsk');
@@ -54,7 +59,7 @@ class DistrictImportService
      * @param SymfonyStyle $io
      * @throws \Exception
      */
-    private function importGdansk(SymfonyStyle $io){
+    private function importGdansk(SymfonyStyle $io) {
         $client = $this->getGuzzleClient();
         $response = $this->parseResponse($client->get('http://www.gdansk.pl/matarnia'));
         $crawler = new Crawler($response);
@@ -73,11 +78,11 @@ class DistrictImportService
      * @param SymfonyStyle $io
      * @throws \Exception
      */
-    private function importKrakow(SymfonyStyle $io){
+    private function importKrakow(SymfonyStyle $io) {
         $client = $this->getGuzzleClient();
         $response = $this->parseResponse($client->get('http://www.bip.krakow.pl/?bip_id=1&mmi=10501'));
         $crawler = new Crawler($response);
-        $iframeSrc = 'http:'.$crawler->filter('iframe[name="FRAME4"]')->attr('src');
+        $iframeSrc = 'http:' . $crawler->filter('iframe[name="FRAME4"]')->attr('src');
         $iframeResponse = $this->parseResponse($client->get($iframeSrc));
         $iframeCrawler = new Crawler($iframeResponse);
         foreach ($iframeCrawler->filter('area') as $area) {
@@ -91,13 +96,11 @@ class DistrictImportService
         }
     }
 
-
     /**
      * @param Response $response
      * @param SymfonyStyle $io
      */
-    private function addGdanskDistrict(Response $response, SymfonyStyle $io)
-    {
+    private function addGdanskDistrict(Response $response, SymfonyStyle $io) {
         $crawler = new Crawler($response->getBody()->getContents());
         foreach ($crawler->filter('div') as $div) {
             if (empty($div->childNodes->item(1))) {
@@ -113,7 +116,7 @@ class DistrictImportService
             $newDistrict->setCity($this->cityRepository->findOneBy(['code' => City::CODE_GDANSK]));
             $newDistrict->setName($name);
             $newDistrict->setArea($area);
-            $newDistrict->setPopulation((int)filter_var($population, FILTER_SANITIZE_NUMBER_INT));
+            $newDistrict->setPopulation((int) filter_var($population, FILTER_SANITIZE_NUMBER_INT));
             $this->entityManager->persist($newDistrict);
         }
         $io->text('District ' . $name . ' has been fetched');
@@ -123,20 +126,19 @@ class DistrictImportService
      * @param Response $response
      * @param SymfonyStyle $io
      */
-    private function addKrakowDistrict(Response $response, SymfonyStyle $io)
-    {
+    private function addKrakowDistrict(Response $response, SymfonyStyle $io) {
         $crawler = new Crawler($response->getBody()->getContents());
         $names = explode("\xc2\xa0", trim($crawler->filter('h3')->text()));
         $name = array_pop($names);
         $otherInfo = $crawler->filter('table table')->first();
         $area = $otherInfo->filter('tr')->first()->text();
-        $area = round((float)filter_var($area, FILTER_SANITIZE_NUMBER_FLOAT)/100/100, 2);
+        $area = round((float) filter_var($area, FILTER_SANITIZE_NUMBER_FLOAT) / 100 / 100, 2);
         $population = $otherInfo->filter('tr')->last()->text();
         $newDistrict = new District();
         $newDistrict->setCity($this->cityRepository->findOneBy(['code' => City::CODE_KRAKOW]));
         $newDistrict->setName($name);
         $newDistrict->setArea($area);
-        $newDistrict->setPopulation((int)filter_var($population, FILTER_SANITIZE_NUMBER_INT));
+        $newDistrict->setPopulation((int) filter_var($population, FILTER_SANITIZE_NUMBER_INT));
         $this->entityManager->persist($newDistrict);
         $io->text('District ' . $name . ' has been fetched');
     }
@@ -144,8 +146,7 @@ class DistrictImportService
     /**
      * @return Client
      */
-    private function getGuzzleClient(): Client
-    {
+    private function getGuzzleClient(): Client {
 
         return new Client($this->clientConfig);
     }
@@ -155,8 +156,7 @@ class DistrictImportService
      * @return string|array
      * @throws \Exception
      */
-    private function parseResponse(Response $response)
-    {
+    private function parseResponse(Response $response) {
         $contents = $response->getBody()->getContents();
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
             if ($this->isJson($contents)) {
@@ -174,12 +174,10 @@ class DistrictImportService
      * @param string $string
      * @return bool
      */
-    private function isJson(string $string) : bool
-    {
+    private function isJson(string $string): bool {
         json_decode($string);
 
         return (json_last_error() == JSON_ERROR_NONE);
     }
-
 
 }

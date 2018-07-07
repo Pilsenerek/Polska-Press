@@ -37,7 +37,7 @@ class City
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -49,7 +49,7 @@ class City
         return $this;
     }
 
-    public function getCode(): ?string
+    public function getCode(): string
     {
         return $this->code;
     }

@@ -4,13 +4,13 @@
 
 {% block body %}
     <div class="mb-3">
-       <a class="btn btn-secondary" href="{{app.request.get('returnUrl')}}"><i class="fa fa-arrow-left"></i> Back</a>
+        <a class="btn btn-secondary" href="{{app.request.get('returnUrl')}}"><i class="fa fa-arrow-left"></i> Back</a>
     </div>
-    
+
     <h2>Adding new district</h2>
-    
+
     <div class="col-md-4">
         {{ form(districtForm) }}
     </div>
-    
+
 {% endblock %}

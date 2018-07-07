@@ -16,10 +16,9 @@ class LoadCity extends Fixture
         ['Gdańsk', City::CODE_GDANSK],
         ['Kraków', City::CODE_KRAKOW],
     ];
-    
-    public function load(ObjectManager $manager)
-    {
-        foreach($this->cities as $city){
+
+    public function load(ObjectManager $manager) {
+        foreach ($this->cities as $city) {
             $newCity = new City();
             $newCity->setName($city[0]);
             $newCity->setCode($city[1]);
@@ -28,4 +27,5 @@ class LoadCity extends Fixture
 
         $manager->flush();
     }
+
 }

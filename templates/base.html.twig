@@ -2,57 +2,57 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        
+        <title>{% block title %}Districts manager{% endblock %}</title>
+
         <link rel="stylesheet" href="/vendor/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="/vendor/@fortawesome/fontawesome-free/css/all.css" />
-        
+
         <script type="text/javascript" src="/vendor/jquery/dist/jquery.min.js"></script>
         <script type="text/javascript" src="/vendor/popper.js/dist/umd/popper.min.js"></script>
         <script type="text/javascript" src="/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
-        
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        <div class="jumbotron text-center">
-            <h1>Districts manager</h1>
+
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    <div class="jumbotron text-center">
+        <h1>Districts manager</h1>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                {% for flash_message in app.session.flashbag.get('danger') %}
+                    <div class="alert alert-danger">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{ flash_message }}
+                    </div>
+                {% endfor %}
+                {% for flash_message in app.session.flashbag.get('success') %}
+                    <div class="alert alert-success">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{ flash_message }}
+                    </div>
+                {% endfor %}
+                {% for flash_message in app.session.flashbag.get('warning') %}
+                    <div class="alert alert-warning">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{ flash_message }}
+                    </div>
+                {% endfor %}
+                {% for flash_message in app.session.flashbag.get('info') %}
+                    <div class="alert alert-info">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{ flash_message }}
+                    </div>
+                {% endfor %}
+
+            </div>
         </div>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    {% for flash_message in app.session.flashbag.get('danger') %}
-                        <div class="alert alert-danger">
-                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            {{ flash_message }}
-                        </div>
-                    {% endfor %}
-                    {% for flash_message in app.session.flashbag.get('success') %}
-                        <div class="alert alert-success">
-                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            {{ flash_message }}
-                        </div>
-                    {% endfor %}
-                    {% for flash_message in app.session.flashbag.get('warning') %}
-                        <div class="alert alert-warning">
-                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            {{ flash_message }}
-                        </div>
-                    {% endfor %}
-                    {% for flash_message in app.session.flashbag.get('info') %}
-                        <div class="alert alert-info">
-                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            {{ flash_message }}
-                        </div>
-                    {% endfor %}
 
-                </div>
-            </div>
-            
-            
-           {% block body %}{% endblock %}
-        </div>    
-        
-        {% block javascripts %}{% endblock %}
-    </body>
+    {% block body %}{% endblock %}
+</div>    
+
+{% block javascripts %}{% endblock %}
+</body>
 </html>

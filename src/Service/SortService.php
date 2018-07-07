@@ -3,12 +3,10 @@
 namespace App\Service;
 
 use App\DTO\Sort;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
-class SortService
-{
+class SortService {
 
     /**
      * @var string
@@ -44,22 +42,20 @@ class SortService
      * @var RequestStack
      */
     private $requestStack;
-    
+
     /**
-     *
      * @var Sort
      */
     private $sortDTO;
 
     /**
-     *
      * @var UrlMatcherInterface
      */
     private $router;
 
     public function __construct(
-        RequestStack $requestStack,
-        UrlMatcherInterface $router
+            RequestStack $requestStack,
+            UrlMatcherInterface $router
     ) {
         $this->requestStack = $requestStack;
         $this->router = $router;
@@ -82,7 +78,12 @@ class SortService
         $this->addSortToQueryBuilder($field, $order, $gridService->getQueryBuilder());
         $this->sortDTO = new Sort($sortUrls, $order, $key, $field);
     }
-    
+
+    /**
+     * @param string $field
+     * @param string $order
+     * @param \Doctrine\ORM\QueryBuilder $queryBuilder
+     */
     private function addSortToQueryBuilder(string $field, string $order, \Doctrine\ORM\QueryBuilder $queryBuilder): void {
         $queryBuilder->addOrderBy($field, $order);
     }
@@ -163,11 +164,13 @@ class SortService
             }
         }
     }
-    
+
+    /**
+     * @return Sort
+     */
     public function getSortDTO(): Sort {
-        
+
         return $this->sortDTO;
     }
-
 
 }

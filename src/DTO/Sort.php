@@ -3,7 +3,7 @@
 namespace App\DTO;
 
 class Sort {
-    
+
     /**
      * @var array
      */
