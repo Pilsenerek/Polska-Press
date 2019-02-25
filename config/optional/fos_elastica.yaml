@@ -1,0 +1,51 @@
+parameters:
+    # on/off elastic search boost
+    fos_elastica.enable: 0
+    
+    fos_elastica.host: localhost
+    fos_elastica.port: 9200
+
+# Read the documentation: https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/master/Resources/doc/setup.md
+fos_elastica:
+    clients:
+        default: { host: '%fos_elastica.host%', port: '%fos_elastica.port%' }
+    indexes:
+        app:
+            settings:
+                analysis:
+                    analyzer:
+                        default: 
+                            tokenizer: keyword
+                            filter: 
+                                - standard
+                                - asciifolding
+                                
+            finder: ~
+            index_name: '%env(APP_NAME)%_%kernel.environment%'
+            
+            types:
+                district:
+                    properties:
+                        id:
+                            type: integer
+                        name:
+                            type: text
+                            fielddata: true
+                            analyzer: default
+                        city:
+                            type: text
+                            fielddata: true
+                            analyzer: default
+                        population:
+                            type: integer
+                        area:
+                            type: float
+                        
+                        #should be string
+                        #city: ~
+                    persistence:    
+                        # the driver can be orm, mongodb or phpcr
+                        driver: orm
+                        model: App\Entity\District
+                        provider: ~
+                        finder: ~

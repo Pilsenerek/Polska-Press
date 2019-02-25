@@ -52,3 +52,26 @@ Linux: run commands from /db.bat file
 
 ## 7. Import disctricts, in console run:
     php bin/console import:districts
+
+## 8. (Optional) Boost by Elastic Search
+Elastic Search allows You to search data more widely and efficient
+Your DB is - of course - involved, but only for replacing ids from ES into full entities
+### 8.1 Install and run Elastic Search according to https://www.elastic.co/
+### 8.2 Set application configration located in \config\optional\fos_elastica.yaml
+    - set fos_elastica.enable to 1
+    - change default host and port (if necessary)
+### 8.3 Clear cache
+    php bin/console cache:clear
+You can turn on/off Elastic Search support many times, but You have to clear cache each time
+### 8.4 Feed Elastic Search
+    php bin/console fos:elastica:populate
+### 8.5 You can confirm effect in debug bar
+- Elastic Search section should appear
+- Queries should be shown as well
+
+## 9. (Optional) Run unit tests
+    Run: 
+
+    vendor\bin\simple-phpunit.bat
+If you don't have xdebug you can install it or skip coverage raport by adding a --no-coverage option.
+Doc: https://phpunit.readthedocs.io/en/7.4/

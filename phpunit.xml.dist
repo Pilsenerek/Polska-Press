@@ -17,6 +17,11 @@
         <!-- define your env variables for the test env here -->
     </php>
 
+    <logging>
+        <log type="coverage-html" target="./public/test-coverage" lowUpperBound="50" highLowerBound="80" />
+        <log type="testdox-html" target="./public/testdox.html" />
+    </logging>
+
     <testsuites>
         <testsuite name="Project Test Suite">
             <directory>tests/</directory>
@@ -25,7 +30,11 @@
 
     <filter>
         <whitelist>
-            <directory>./src/</directory>
+            <directory suffix=".php">./src/</directory>
+            <exclude>
+                <directory suffix=".php">./tests/</directory>
+                <directory suffix=".php">./templates/</directory>
+            </exclude>
         </whitelist>
     </filter>
 

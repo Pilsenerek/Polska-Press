@@ -3,13 +3,14 @@
 namespace App\Service;
 
 use App\DTO\Sort;
-use Doctrine\ORM\QueryBuilder;
+use Elastica\Query;
 use Exception;
+use FOS\ElasticaBundle\Finder\TransformedFinder;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class GridService {
+class GridElasticaService {
 
     /**
      * @var int
@@ -20,12 +21,12 @@ class GridService {
      * @var string
      */
     private $defaultPageKey = 'page';
-
-    /**
-     * @var QueryBuilder
-     */
-    private $queryBuilder;
     
+    /**
+     * @var Query
+     */
+    private $queryEs;
+
     /**
      * @var PaginationInterface
      */
@@ -47,33 +48,41 @@ class GridService {
     private $sortKeepParams = [];
 
     /**
-     * @var SortService
+     * @var SortElasticaService
      */
-    private $sortService;
+    private $sortElasticaService;
     
+    /**
+     * @var TransformedFinder
+     */
+    private $transformedFinder = null;
+
     public function __construct(
             PaginatorInterface $paginator,
             RequestStack $requestStack,
-            SortService $sortService
+            SortElasticaService $sortElasticaService,
+            TransformedFinder $transformedFinder = null
     ) {
         $this->knpPaginator = $paginator;
         $this->requestStack = $requestStack;
-        $this->sortService = $sortService;
+        $this->sortElasticaService = $sortElasticaService;
+        $this->transformedFinder = $transformedFinder;
     }
-
+    
     /**
      * @return PaginationInterface
      */
-    public function getPaginate(): PaginationInterface {
+    public function getPaginateEs(): PaginationInterface {
         if (!empty($this->sortParams)) {
-            $this->sortService->prepareSortDTO($this);
+            $this->sortElasticaService->prepareSortDTO($this);
         }
         $page = $this->requestStack->getCurrentRequest()->get($this->getDefaultPageKey(), 1);
-        $entries = $this->knpPaginator->paginate($this->queryBuilder, $page, $this->getDefaultItemsOnPage());
+        $elasticResults = $this->transformedFinder->createPaginatorAdapter($this->queryEs);
+        $entries = $this->knpPaginator->paginate($elasticResults, $page, $this->getDefaultItemsOnPage());
         
         return $entries;
     }
-    
+
     /**
      * @return int
      */
@@ -83,27 +92,27 @@ class GridService {
     }
 
     /**
-     * @return QueryBuilder
+     * @return Query
      */
-    public function getQueryBuilder(): QueryBuilder {
+    public function getQueryEs(): Query {
 
-        return $this->queryBuilder;
+        return $this->queryEs;
     }
-
+    
     /**
      * @param int $defaultItemsOnPage
      */
     public function setDefaultItemsOnPage(int $defaultItemsOnPage) {
         $this->defaultItemsOnPage = $defaultItemsOnPage;
     }
-
-    /**
-     * @param QueryBuilder $queryBuilder
-     */
-    public function setQueryBuilder(QueryBuilder $queryBuilder) {
-        $this->queryBuilder = $queryBuilder;
-    }
     
+    /**
+     * @param Query $queryEs
+     */
+    public function setQueryEs(Query $queryEs) {
+        $this->queryEs = $queryEs;
+    }
+
     /**
      * @return string
      */
@@ -158,9 +167,9 @@ class GridService {
 
             throw new Exception('Sort params are empty! You have to set it first.');
         }
-        $this->sortService->prepareSortDTO($this);
+        $this->sortElasticaService->prepareSortDTO($this);
 
-        return $this->sortService->getSortDTO();
+        return $this->sortElasticaService->getSortDTO();
     }
 
 }

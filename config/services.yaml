@@ -29,3 +29,28 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    #FOS\ElasticaBundle\Finder\TransformedFinder: '@fos_elastica.finder.app.district'
+    #FOS\UserBundle\Model\UserManager: '@fos_user.user_manager.default'
+    
+    
+    #App\Service\SortElasticaService: '@app.sort_elastica_service'
+    
+    
+    App\Service\GridElasticaService:
+        arguments:
+            - '@knp_paginator'
+            - '@request_stack'
+            - '@App\Service\SortElasticaService'
+            - '@?fos_elastica.finder.app'
+            
+    App\Service\DistrictService:
+        arguments:
+            - '@form.factory'
+            - '@App\Service\GridService'
+            - '@App\Service\GridElasticaService'
+            - '@App\Repository\DistrictRepository'
+            - '@doctrine.orm.entity_manager'
+            - '@session'
+            - '@?fos_elastica.finder.app'
+        

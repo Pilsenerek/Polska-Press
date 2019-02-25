@@ -14,16 +14,17 @@
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
-    <div class="jumbotron text-left">
-        <a href="/">
-            <h1>
-                <img width="150" src="/img/district.png">
-                manager
-            </h1>
-        </a>
-    </div>
-
     <div class="container-fluid">
+        
+        <div class="jumbotron text-left mt-3 mb-3 p-3">
+            <a href="/">
+                <h1>
+                    <img width="150" src="/img/district.png">
+                    manager
+                </h1>
+            </a>
+        </div>
+
         <div class="row">
             <div class="col-md-12">
                 {% for flash_message in app.session.flashbag.get('danger') %}
@@ -53,9 +54,21 @@
 
             </div>
         </div>
-
-
+                
     {% block body %}{% endblock %}
+    
+    <footer class="bg-light border p-3 mt-5 mb-3">
+        <ul class="list-inline text-center text-muted m-0">
+            <li class="list-inline-item">Copyright &copy; Michał Zbieranek</li>
+            
+            {% if(app.getEnvironment() == 'dev') %}
+            <li class="list-inline-item">
+                <a href="/test-coverage/index.html">Test coverage</a>
+            </li>
+            {%  endif %}
+        </ul>
+    </footer>   
+        
 </div>    
 
 {% block javascripts %}{% endblock %}

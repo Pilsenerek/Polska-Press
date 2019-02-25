@@ -25,14 +25,42 @@ class Kernel extends BaseKernel
         return $this->getProjectDir().'/var/log';
     }
 
-    public function registerBundles()
-    {
-        $contents = require $this->getProjectDir().'/config/bundles.php';
+    public function registerBundles() {
+        $contents = require $this->getProjectDir() . '/config/bundles.php';
+
+        //register dynamic bundles
+        if($this->isFOSElasticaBundleEnabled()){
+            $contents[\FOS\ElasticaBundle\FOSElasticaBundle::class] = ['all' => true];
+        }
+        
         foreach ($contents as $class => $envs) {
             if (isset($envs['all']) || isset($envs[$this->environment])) {
+
                 yield new $class();
             }
         }
+    }
+
+    /**
+     * Make FOSElastica bundle allowance dependent on it's own configuration
+     * You can disable/enable bundle by changing fos_elastica.enable property in
+     *     \config\packages\fos_elastica.yaml
+     * 
+     * @return bool
+     */
+    private function isFOSElasticaBundleEnabled(): bool {
+        $fosElasticaCfg = $this->getProjectDir() . '/config/optional/fos_elastica.yaml';
+        $configValues = \Symfony\Component\Yaml\Yaml::parse(file_get_contents($fosElasticaCfg));
+        
+        //@todo provide environment context
+        
+//        $fosElasticaEnvCfg = $this->getProjectDir() . '/config/optional/' . $this->environment . '/fos_elastica.yaml';
+//        if (file_exists($fosElasticaEnvCfg)) {
+//            $configEnvValues = \Symfony\Component\Yaml\Yaml::parse(file_get_contents($fosElasticaEnvCfg));
+//            $configValues = array_merge($configValues, $configEnvValues);
+//        }
+        
+        return (bool) $configValues['parameters']['fos_elastica.enable'];
     }
 
     protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
@@ -46,6 +74,14 @@ class Kernel extends BaseKernel
 
         $loader->load($confDir.'/{packages}/*'.self::CONFIG_EXTS, 'glob');
         $loader->load($confDir.'/{packages}/'.$this->environment.'/**/*'.self::CONFIG_EXTS, 'glob');
+        
+
+        foreach ($container->getExtensions() as $extName => $extClass) {
+            if (file_exists($confDir . '/optional/' . $extName . '.yaml')) {
+                $loader->load($confDir . '/{optional}/' . $extName . '.yaml', 'glob');
+            }
+        }
+
         $loader->load($confDir.'/{services}'.self::CONFIG_EXTS, 'glob');
         $loader->load($confDir.'/{services}_'.$this->environment.self::CONFIG_EXTS, 'glob');
     }

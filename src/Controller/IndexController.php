@@ -7,6 +7,7 @@ use App\Service\DistrictService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,12 +17,21 @@ class IndexController extends Controller
      * @var DistrictService
      */
     private $districtService;
+    
+    /**
+     * @var ParameterBagInterface
+     */
+    private $parameterBag;
 
     /**
      * @param DistrictService $districtService
      */
-    public function __construct(DistrictService $districtService) {
+    public function __construct(
+            DistrictService $districtService,
+            ParameterBagInterface $parameterBag
+        ) {
         $this->districtService = $districtService;
+        $this->parameterBag = $parameterBag;
     }
 
     /**
@@ -29,8 +39,13 @@ class IndexController extends Controller
      * @Template
      */
     public function index(Request $request): array {
+        if ($this->parameterBag->has('fos_elastica.enable')) {
 
-        return $this->districtService->index($request);
+            return $this->districtService->indexEs($request);
+        } else {
+
+            return $this->districtService->index($request);
+        }
     }
 
     /**

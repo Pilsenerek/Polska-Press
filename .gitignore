@@ -6,6 +6,8 @@
 /.env
 /public/bundles/
 /public/vendor/
+/public/test-coverage/
+/public/testdox.html
 /var/
 /vendor/
 ###< symfony/framework-bundle ###

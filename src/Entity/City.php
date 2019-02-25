@@ -75,4 +75,13 @@ class City
 
         return $this;
     }
+    
+    /**
+     * @return String
+     */
+    public function __toString() : ?string {
+
+        return $this->name;
+    }
+
 }

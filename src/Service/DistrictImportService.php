@@ -146,7 +146,7 @@ class DistrictImportService {
     /**
      * @return Client
      */
-    private function getGuzzleClient(): Client {
+    public function getGuzzleClient(): Client {
 
         return new Client($this->clientConfig);
     }

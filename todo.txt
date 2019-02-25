@@ -1,0 +1,3 @@
+1. Make optional bundle "fos_elastica" dependent on env configuration also
+2. Fix problem with searching via reference in Elastic Search
+3. Remove depreciations

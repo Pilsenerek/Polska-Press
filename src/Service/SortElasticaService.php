@@ -3,10 +3,11 @@
 namespace App\Service;
 
 use App\DTO\Sort;
+use Elastica\Query;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
-class SortService {
+class SortElasticaService {
 
     /**
      * @var string
@@ -64,9 +65,9 @@ class SortService {
     /**
      * @param GridService $gridService
      */
-    public function prepareSortDTO(GridService $gridService) {
-        $this->params = $gridService->getSortParams();
-        $this->keepParams = $gridService->getSortKeepParams();
+    public function prepareSortDTO(GridElasticaService $gridElasticaService) {
+        $this->params = $gridElasticaService->getSortParams();
+        $this->keepParams = $gridElasticaService->getSortKeepParams();
         list($key, $field) = $this->prepareKeyAndField();
         $request = $this->requestStack->getCurrentRequest();
         if ($request->get($this->defaultOrderKey)) {
@@ -75,7 +76,7 @@ class SortService {
             $order = $this->defaultSortDirection;
         }
         $sortUrls = $this->prepareSortUrls($order);
-        $this->addSortToQueryBuilder($field, $order, $gridService->getQueryBuilder());
+        $this->addSortToQueryEs($field, $order, $gridElasticaService->getQueryEs());
         $this->sortDTO = new Sort($sortUrls, $order, $key, $field);
     }
 
@@ -84,11 +85,20 @@ class SortService {
      * @param string $order
      * @param \Doctrine\ORM\QueryBuilder $queryBuilder
      */
-    private function addSortToQueryBuilder(string $field, string $order, \Doctrine\ORM\QueryBuilder $queryBuilder): void {
-        $queryBuilder->addOrderBy($field, $order);
-    }
+//    private function addSortToQueryBuilder(string $field, string $order, \Doctrine\ORM\QueryBuilder $queryBuilder): void {
+//        $queryBuilder->addOrderBy($field, $order);
+//    }
 
      /**
+     * @param string $field
+     * @param string $order
+     * @param Query $queryEs
+     */
+    private function addSortToQueryEs(string $field, string $order, Query $queryEs): void {
+        $queryEs->setSort([$field => ['order' => $order]]);
+    }
+    
+    /**
      * @return array
      */
     private function prepareKeyAndField(): array {
@@ -142,7 +152,6 @@ class SortService {
         $this->removeUnusedParams();
         $params = [$this->defaultSortKey => $field];
         $allExtraParams = array_merge(array_flip($this->keepParams), $this->extraParams);
-
         foreach ($allExtraParams as $extraParamKey => $extraParamVal) {
             $params[$extraParamKey] = $request->get($extraParamKey, $extraParamVal);
         }

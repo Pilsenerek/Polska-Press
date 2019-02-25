@@ -7,6 +7,7 @@ use App\Form\DistrictForm;
 use App\Form\SearchForm;
 use App\Repository\DistrictRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use FOS\ElasticaBundle\Finder\TransformedFinder;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +24,11 @@ class DistrictService {
      * @var GridService
      */
     private $gridService;
+    
+    /**
+     * @var GridElasticaService
+     */
+    private $gridElasticaService;
 
     /**
      * @var DistrictRepository
@@ -38,19 +44,28 @@ class DistrictService {
      * @var SessionInterface
      */
     private $session;
+    
+    /**
+     * @var TransformedFinder
+     */
+    private $transformedFinder = null;
 
     public function __construct(
             FormFactoryInterface $formFactory,
             GridService $gridService,
+            GridElasticaService $gridElasticaService,
             DistrictRepository $districtRepository,
             EntityManagerInterface $entityManager,
-            SessionInterface $session
+            SessionInterface $session,
+            TransformedFinder $transformedFinder = null
     ) {
         $this->formFactory = $formFactory;
         $this->gridService = $gridService;
+        $this->gridElasticaService = $gridElasticaService;
         $this->districtRepository = $districtRepository;
         $this->entityManager = $entityManager;
         $this->session = $session;
+        $this->transformedFinder = $transformedFinder;
     }
 
     /**
@@ -76,6 +91,44 @@ class DistrictService {
             'searchForm' => $searchForm->createView(),
             'districts' => $this->gridService->getPaginate(),
             'sort' => $this->gridService->getSort(),
+        ];
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    public function indexEs(Request $request): array {
+        $searchForm = $this->formFactory->create(SearchForm::class);
+        $searchForm->handleRequest($request);
+        $queryBuilder = $this->districtRepository->findAllQb($request->get('col'), $request->get('search'));
+        $column = $request->get('col');
+        if (!empty($column)) {
+            $columns = explode('.', $column);
+            $column = array_pop($columns);
+        }
+
+        $queryEs = $this->districtRepository->findAllEs($column, $request->get('search'));
+
+        $sortParams = [
+            'name' => 'name',
+            'city' => 'city',
+            'id' => 'id',
+            'population' => 'population',
+            'area' => 'area',
+        ];
+
+        //@todo it shoudln't be necessary
+        //$this->gridService->setQueryBuilder($queryBuilder);
+
+        $this->gridElasticaService->setQueryEs($queryEs);
+        $this->gridElasticaService->setSortParams($sortParams);
+        $this->gridElasticaService->setSortKeepParams(['col', 'search']);
+        
+        return [
+            'searchForm' => $searchForm->createView(),
+            'districts' => $this->gridElasticaService->getPaginateEs(),
+            'sort' => $this->gridElasticaService->getSort(),
         ];
     }
 

@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\District;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use Elastica\Query;
+use Elastica\Query\Wildcard;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -38,6 +40,21 @@ class DistrictRepository extends ServiceEntityRepository {
         }
 
         return $qb;
+    }
+    
+    /**
+     * @param string $propertyName
+     * @param string $search
+     * @return Query
+     */
+    public function findAllEs(string $propertyName = null, string $search = null): Query {
+        $query = new Query();
+        if (!empty($propertyName) && !empty($search)) {
+            $matchAll = new Wildcard($propertyName, '*' . $search . '*');
+            $query->setQuery($matchAll);
+        }
+
+        return $query;
     }
 
 }
